@@ -1,0 +1,115 @@
+<svg class='notselectable nwlinkhovertoggle' height='221' id='svg_network_image' width='975' style='vertical-align:top;' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
+<style type='text/css'><![CDATA[
+.nwbubblecoloredcircle { opacity: 0.4; }
+.nwbubbletransparentdcircle { opacity: 0.1; }
+.nwnodecontainer:hover { cursor: pointer; }
+.nwnodecontainer:hover .nwbubblecoloredcircle { opacity: 0.2; }
+.nwnodecontainerselected .nwbubblecoloredcircle { fill: rgb(255,0,0) !important; }
+.nwnodecontainerwhiteout .nwbubblecoloredcircle { fill: rgb(255,255,255) !important; }
+text { font-family: Arial; font-size: 12px; }
+.nwlinkhovertoggle .nwlinkwrapper:hover { cursor: pointer; }
+]]></style>
+<g id='edges'>
+</g>
+<g id='nodes'>
+<defs>
+    <filter id='filter_shadow'>
+        <feGaussianBlur stdDeviation='1' />
+    </filter>
+</defs>
+<defs>
+    <filter height='200%' id='filter_bg_text' width='200%' x='-50%' y='-50%'>
+        <feGaussianBlur stdDeviation='1.8' />
+    </filter>
+    <filter height='200%' id='filter_bg_textFlat' width='200%' x='-50%' y='-50%'>
+        <feGaussianBlur stdDeviation='0' />
+    </filter>
+</defs>
+<defs>
+    <linearGradient id='bubble_gradient1' x1='50%' x2='50%' y1='100%' y2='0%'>
+        <stop offset='0.2472' style='stop-color:#FAFAFA;' />
+        <stop offset='0.4517' style='stop-color:#A2A2A2;' />
+        <stop offset='0.6785' style='stop-color:#5E5E5E;' />
+        <stop offset='0.8975' style='stop-color:#3C3C3C;' />
+        <stop offset='1' style='stop-color:#383838;' />
+    </linearGradient>
+    <radialGradient cx='50%' cy='50%' id='bubble_gradient2' r='50%'>
+        <stop offset='0' style='stop-color:#FFFFFF;' />
+        <stop offset='0.3726' style='stop-color:#FDFDFD;' />
+        <stop offset='0.6026' style='stop-color:#EBEBEB;' />
+        <stop offset='0.7463' style='stop-color:#C4C4C4;' />
+        <stop offset='0.8581' style='stop-color:#888888;' />
+        <stop offset='0.9523' style='stop-color:#373737;' />
+        <stop offset='0.9926' style='stop-color:#090909;' />
+        <stop offset='1' style='stop-color:#000000;' />
+    </radialGradient>
+    <radialGradient cx='50%' cy='50%' id='bubble_gradientFbbb' r='50%'>
+        <stop offset='0' style='stop-color:#FFFFFF;' />
+        <stop offset='0.8400' style='stop-color:#FFFFFF;' />
+        <stop offset='0.8800' style='stop-color:#000000;' />
+        <stop offset='1' style='stop-color:#000000;' />
+    </radialGradient>
+</defs>
+<defs>
+    <linearGradient id='brilliance_gradient' x1='50%' x2='50%' y1='0%' y2='100%'>
+        <stop offset='0' style='stop-color:#FFFFFF;stop-opacity:1;' />
+        <stop offset='0.1' style='stop-color:#FFFFFF;stop-opacity:0.99;' />
+        <stop offset='1' style='stop-color:#FFFFFF;stop-opacity:0;' />
+    </linearGradient>
+</defs>
+<g class='nwnodecontainer' data-action_option='remove' data-exp_height='250' data-exp_width='324' data-radius='20' data-safe_div_label='AMD1' data-x_pos='499' data-y_pos='134' id='node.4443213'>
+<ellipse cx='499' cy='143' fill='#000000' filter='url(#filter_shadow)' opacity='0.6' rx='19' ry='14' />
+<circle cx='499' cy='134' fill='url(#bubble_gradient1)' r='20' />
+<circle cx='499' cy='134' fill='url(#bubble_gradient2)' opacity='0.45' r='20' />
+<circle class='nwbubblecoloredcircle'  cx='499' cy='134' fill='rgb(255,0,0)' r='20' />
+<ellipse cx='499' cy='122' fill='url(#brilliance_gradient)' rx='11.5' ry='6' />
+<text fill='rgb(247,246,242)' filter='url(#filter_bg_text)' opacity='1.0' stroke='rgb(247,246,242)' stroke-width='5' stroke-linecap='butt' text-anchor='start' x='517' y='116'>AMD1</text>
+<text fill='rgb(0,0,0)' opacity='1.0' text-anchor='start' x='517' y='116'>AMD1</text>
+</g>
+<g class='nwnodecontainer' data-action_option='remove' data-exp_height='250' data-exp_width='324' data-radius='20' data-safe_div_label='DPYSL2' data-x_pos='427' data-y_pos='92' id='node.4438513'>
+<ellipse cx='427' cy='101' fill='#000000' filter='url(#filter_shadow)' opacity='0.6' rx='19' ry='14' />
+<circle cx='427' cy='92' fill='url(#bubble_gradient1)' r='20' />
+<circle cx='427' cy='92' fill='url(#bubble_gradient2)' opacity='0.45' r='20' />
+<circle class='nwbubblecoloredcircle'  cx='427' cy='92' fill='rgb(255,224,101)' r='20' />
+<ellipse cx='427' cy='80' fill='url(#brilliance_gradient)' rx='11.5' ry='6' />
+<text fill='rgb(247,246,242)' filter='url(#filter_bg_text)' opacity='1.0' stroke='rgb(247,246,242)' stroke-width='5' stroke-linecap='butt' text-anchor='start' x='445' y='74'>DPYSL2</text>
+<text fill='rgb(0,0,0)' opacity='1.0' text-anchor='start' x='445' y='74'>DPYSL2</text>
+</g>
+<g class='nwnodecontainer' data-action_option='remove' data-exp_height='250' data-exp_width='324' data-radius='20' data-safe_div_label='HSD17B4' data-x_pos='541' data-y_pos='176' id='node.4449147'>
+<ellipse cx='541' cy='185' fill='#000000' filter='url(#filter_shadow)' opacity='0.6' rx='19' ry='14' />
+<circle cx='541' cy='176' fill='url(#bubble_gradient1)' r='20' />
+<circle cx='541' cy='176' fill='url(#bubble_gradient2)' opacity='0.45' r='20' />
+<circle class='nwbubblecoloredcircle'  cx='541' cy='176' fill='rgb(71,178,0)' r='20' />
+<ellipse cx='541' cy='164' fill='url(#brilliance_gradient)' rx='11.5' ry='6' />
+<text fill='rgb(247,246,242)' filter='url(#filter_bg_text)' opacity='1.0' stroke='rgb(247,246,242)' stroke-width='5' stroke-linecap='butt' text-anchor='start' x='559' y='158'>HSD17B4</text>
+<text fill='rgb(0,0,0)' opacity='1.0' text-anchor='start' x='559' y='158'>HSD17B4</text>
+</g>
+<g class='nwnodecontainer' data-action_option='remove' data-exp_height='250' data-exp_width='324' data-radius='20' data-safe_div_label='KHSRP' data-x_pos='475' data-y_pos='50' id='node.4446783'>
+<ellipse cx='475' cy='59' fill='#000000' filter='url(#filter_shadow)' opacity='0.6' rx='19' ry='14' />
+<circle cx='475' cy='50' fill='url(#bubble_gradient1)' r='20' />
+<circle cx='475' cy='50' fill='url(#bubble_gradient2)' opacity='0.45' r='20' />
+<circle class='nwbubblecoloredcircle'  cx='475' cy='50' fill='rgb(101,255,163)' r='20' />
+<ellipse cx='475' cy='38' fill='url(#brilliance_gradient)' rx='11.5' ry='6' />
+<text fill='rgb(247,246,242)' filter='url(#filter_bg_text)' opacity='1.0' stroke='rgb(247,246,242)' stroke-width='5' stroke-linecap='butt' text-anchor='start' x='493' y='32'>KHSRP</text>
+<text fill='rgb(0,0,0)' opacity='1.0' text-anchor='start' x='493' y='32'>KHSRP</text>
+</g>
+<g class='nwnodecontainer' data-action_option='remove' data-exp_height='250' data-exp_width='324' data-radius='20' data-safe_div_label='CPSF1' data-x_pos='433' data-y_pos='176' id='node.4451877'>
+<ellipse cx='433' cy='185' fill='#000000' filter='url(#filter_shadow)' opacity='0.6' rx='19' ry='14' />
+<circle cx='433' cy='176' fill='url(#bubble_gradient1)' r='20' />
+<circle cx='433' cy='176' fill='url(#bubble_gradient2)' opacity='0.45' r='20' />
+<circle class='nwbubblecoloredcircle'  cx='433' cy='176' fill='rgb(0,142,178)' r='20' />
+<ellipse cx='433' cy='164' fill='url(#brilliance_gradient)' rx='11.5' ry='6' />
+<text fill='rgb(247,246,242)' filter='url(#filter_bg_text)' opacity='1.0' stroke='rgb(247,246,242)' stroke-width='5' stroke-linecap='butt' text-anchor='start' x='451' y='158'>CPSF1</text>
+<text fill='rgb(0,0,0)' opacity='1.0' text-anchor='start' x='451' y='158'>CPSF1</text>
+</g>
+<g class='nwnodecontainer' data-action_option='remove' data-exp_height='250' data-exp_width='324' data-radius='20' data-safe_div_label='UBA52' data-x_pos='535' data-y_pos='92' id='node.4447538'>
+<ellipse cx='535' cy='101' fill='#000000' filter='url(#filter_shadow)' opacity='0.6' rx='19' ry='14' />
+<circle cx='535' cy='92' fill='url(#bubble_gradient1)' r='20' />
+<circle cx='535' cy='92' fill='url(#bubble_gradient2)' opacity='0.45' r='20' />
+<circle class='nwbubblecoloredcircle'  cx='535' cy='92' fill='rgb(101,102,255)' r='20' />
+<ellipse cx='535' cy='80' fill='url(#brilliance_gradient)' rx='11.5' ry='6' />
+<text fill='rgb(247,246,242)' filter='url(#filter_bg_text)' opacity='1.0' stroke='rgb(247,246,242)' stroke-width='5' stroke-linecap='butt' text-anchor='start' x='553' y='74'>UBA52</text>
+<text fill='rgb(0,0,0)' opacity='1.0' text-anchor='start' x='553' y='74'>UBA52</text>
+</g>
+</g>
+</svg>

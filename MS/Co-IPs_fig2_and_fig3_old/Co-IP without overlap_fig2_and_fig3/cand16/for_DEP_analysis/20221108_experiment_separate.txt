@@ -1,0 +1,17 @@
+label	condition	replicate
+16_harsh_r1_A	cand16_harsh	1
+16_harsh_r1_B	cand16_harsh	2
+16_harsh_r2_A	cand16_harsh	3
+16_harsh_r2_B	cand16_harsh	4
+16_pbs_r3_A	cand16_pbs	1
+16_pbs_r3_B	cand16_pbs	2
+16_pbs_r4_A	cand16_pbs	3
+16_pbs_r4_B	cand16_pbs	4
+parental_harsh_r1_A	parental_harsh	1
+parental_harsh_r1_B	parental_harsh	2
+parental_harsh_r2_A	parental_harsh	3
+parental_harsh_r2_B	parental_harsh	4
+parental_pbs_r3_A	parental_pbs	1
+parental_pbs_r3_B	parental_pbs	2
+parental_pbs_r4_A	parental_pbs	3
+parental_pbs_r4_B	parental_pbs	4

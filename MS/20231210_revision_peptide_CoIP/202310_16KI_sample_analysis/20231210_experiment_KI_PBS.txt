@@ -1,0 +1,13 @@
+label	condition	replicate
+A375_par_A_1	parental	1
+A375_par_A_2	parental	2
+A375_par_A_3	parental	3
+A375_par_B_1	parental	4
+A375_par_B_2	parental	5
+A375_par_B_3	parental	6
+A375_16KI_A_1	16KI	1
+A375_16KI_A_2	16KI	2
+A375_16KI_A_3	16KI	3
+A375_16KI_B_1	16KI	4
+A375_16KI_B_2	16KI	5
+A375_16KI_B_3	16KI	6

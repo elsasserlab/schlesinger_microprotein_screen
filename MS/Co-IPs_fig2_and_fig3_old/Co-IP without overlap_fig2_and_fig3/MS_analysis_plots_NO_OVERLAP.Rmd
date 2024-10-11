@@ -1,0 +1,2213 @@
+---
+title: "MS figures_without overlap"
+output: html_document
+date: "2023-03-05"
+---
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+```{r setup}
+library(tidyverse)
+library(ggplot2)
+library(ggrastr)
+library(ggrepel)
+#read in DEP generated file
+
+DEP_output <- read.delim("cand1_11_19/20210730__plotted230301_NO_OVERLAP_6out6_MSMSfalse_NOnorm_imp_min_lfc_1_5.txt")
+```
+# volanco plot for candidate 1
+```{r make lists for GO terms}
+#make list of proteasome components according to string (GO:0000502)
+proteasome_complex <- c(
+    "ADRM1",
+"HSPB1",
+"IDE",
+"KIAA0368",
+"PAAF1",
+"PSMA1",
+"PSMA2",
+"PSMA3",
+"PSMA4",
+"PSMA5",
+"PSMA6",
+"PSMA7",
+"PSMA8",
+"PSMB1",
+"PSMB10",
+"PSMB11",
+"PSMB2",
+"PSMB3",
+"PSMB4",
+"PSMB5",
+"PSMB6",
+"PSMB7",
+"PSMB8",
+"PSMB9",
+"PSMC1",
+"PSMC2",
+"PSMC3",
+"PSMC4",
+"PSMC5",
+"PSMC6",
+"PSMD1",
+"PSMD10",
+"PSMD11",
+"PSMD12",
+"PSMD13",
+"PSMD14",
+"PSMD2",
+"PSMD3",
+"PSMD4",
+"PSMD5",
+"PSMD6",
+"PSMD7",
+"PSMD8",
+"PSMD9",
+"PSME1",
+"PSME2",
+"PSME3",
+"PSME4",
+"PSMF1",
+"RAD23A",
+"RAD23B",
+"SHFM1",
+"TXNL1",
+"UBE3A",
+"UBE3C",
+"UBQLN1",
+"UBR1",
+"UCHL5",
+"USP14",
+"VCP",
+"ZFAND2A",
+"ZFAND2B"
+)
+
+#mitochondrial transport (GO:0006839; should be 225 proteins but only have 214)
+mito_transport <- c(
+    "ABCB10",
+"ACAA2",
+"ACACA",
+"ACACB",
+"AFG3L2",
+"AGK",
+"AIFM1",
+"AIP",
+"ATF2",
+"ATP5A1",
+"ATP5B",
+"ATP5C1",
+"ATP5D",
+"ATP5E",
+"ATP5F1",
+"ATP5G1",
+"ATP5G2",
+"ATP5G3",
+"ATP5H",
+"ATP5I",
+"ATP5J",
+"ATP5J2",
+"ATP5L",
+"ATP5O",
+"ATP5S",
+"ATPIF1",
+"BAD",
+"BAK1",
+"BAX",
+"BBC3",
+"BCL2",
+"BCL2L1",
+"BCL2L11",
+"BCL2L2",
+"BCL2L2-PABPN1",
+"BCS1L",
+"BID",
+"BMF",
+"BNIP3",
+"BNIP3L",
+"BOK",
+"C19orf52",
+"C22orf29",
+"C2orf47",
+"CAMK2A",
+"CASP8",
+"CCDC109B",
+"CHCHD10",
+"CHCHD4",
+"CNP",
+"COX18",
+"COX5B",
+"CPT1A",
+"CPT1B",
+"CPT2",
+"CYC1",
+"DNAJC15",
+"DNAJC19",
+"DNLZ",
+"DP2",
+"E2F1",
+"ENSP00000461324",
+"FBXO7",
+"FIS1",
+"FLVCR1",
+"GDAP1",
+"GRPEL1",
+"GRPEL2",
+"GSK3A",
+"GSK3B",
+"GZMB",
+"HK2",
+"HSP90AA1",
+"HSPA1A",
+"HSPA4",
+"HSPD1",
+"IMMP1L",
+"IMMP2L",
+"LETM1",
+"MAPK8",
+"MCU",
+"MCUR1",
+"MFF",
+"MFN2",
+"MGARP",
+"MICU1",
+"MICU2",
+"MID1IP1",
+"MIPEP",
+"MPC1",
+"MPC2",
+"MPV17L",
+"MRPL18",
+"MRS2",
+"MT-ATP6",
+"MTX2",
+"MUL1",
+"NDUFA13",
+"NMT1",
+"OPA1",
+"OXA1L",
+"PAM16",
+"PARK2",
+"PINK1",
+"PITRM1",
+"PMAIP1",
+"PMPCA",
+"PMPCB",
+"PPIF",
+"PPP1R13B",
+"PPP3CC",
+"PPP3R1",
+"PRKAA2",
+"PRKAB2",
+"PRKAG2",
+"PSEN1",
+"RHOT1",
+"RHOT2",
+"ROMO1",
+"SAMM50",
+"SFN",
+"SFXN1",
+"SFXN2",
+"SFXN3",
+"SFXN4",
+"SFXN5",
+"SIVA1",
+"SLC25A1",
+"SLC25A10",
+"SLC25A12",
+"SLC25A13",
+"SLC25A14",
+"SLC25A15",
+"SLC25A16",
+"SLC25A18",
+"SLC25A2",
+"SLC25A20",
+"SLC25A22",
+"SLC25A23",
+"SLC25A24",
+"SLC25A28",
+"SLC25A30",
+"SLC25A33",
+"SLC25A37",
+"SLC25A38",
+"SLC25A46",
+"SLC25A5",
+"SLC25A6",
+"SLC8B1",
+"SLC9A1",
+"SMDT1",
+"SPG7",
+"STARD3",
+"STAT3",
+"STOML2",
+"TFDP1",
+"TIMM10",
+"TIMM10B",
+"TIMM13",
+"TIMM17A",
+"TIMM17B",
+"TIMM21",
+"TIMM22",
+"TIMM23",
+"TIMM23B",
+"TIMM44",
+"TIMM50",
+"TIMM8B",
+"TIMM9",
+"TMEM14A",
+"TMEM14B",
+"TOMM20",
+"TOMM20L",
+"TOMM22",
+"TOMM34",
+"TOMM40",
+"TOMM40L",
+"TOMM5",
+"TOMM7",
+"TOMM70A",
+"TP53",
+"TP53BP2",
+"TP63",
+"UCP1",
+"UCP2",
+"UCP3",
+"VPS35",
+"YWHAB",
+"YWHAE",
+"YWHAG",
+"YWHAH",
+"YWHAQ",
+"TMEM14C",
+"THRSP",
+"UQCRC2",
+"TST",
+"MOAP1",
+"MT-ATP8",
+"TSPO",
+"PNPT1",
+"YWHAZ",
+"BLOC1S2",
+"KIAA1279",
+"NAIF1",
+"TP73",
+"ENSP00000439782",
+"SLC25A29",
+"THEM4",
+"ZNF205",
+"SLC25A36",
+"SLC25A32",
+"SLC39A8",
+"SLC35F6"
+)
+
+#cellular respiration (GO:0045333, should be 158 but only have 151)
+cellular_respiration=c("ACO1",
+"ACO2",
+"ADSL",
+"AIFM2",
+"ATP5D",
+"BID",
+"BLOC1S1",
+"C6orf57",
+"CAT",
+"COA6",
+"COQ10A",
+"COQ10B",
+"COQ9",
+"COX10",
+"COX15",
+"COX4I1",
+"COX4I2",
+"COX5A",
+"COX5B",
+"COX6A1",
+"COX6A2",
+"COX6B1",
+"COX6C",
+"COX7A2L",
+"COX7B",
+"COX7C",
+"COX8A",
+"CS",
+"CYC1",
+"CYCS",
+"DHTKD1",
+"DLAT",
+"DLD",
+"DLST",
+"ETFA",
+"ETFB",
+"ETFDH",
+"FAHD1",
+"FH",
+"FXN",
+"GPD1",
+"GPD2",
+"IDH1",
+"IDH2",
+"IDH3A",
+"IDH3B",
+"IDH3G",
+"IREB2",
+"LACE1",
+"LYRM5",
+"LYRM7",
+"MDH1",
+"MDH1B",
+"MDH2",
+"ME2",
+"ME3",
+"MT-CO1",
+"MT-CO2",
+"MT-CO3",
+"MT-CYB",
+"MT-ND1",
+"MT-ND2",
+"MT-ND3",
+"MT-ND4",
+"MT-ND4L",
+"MT-ND5",
+"MT-ND6",
+"MTFR1",
+"MYBBP1A",
+"NDUFA1",
+"NDUFA10",
+"NDUFA11",
+"NDUFA12",
+"NDUFA13",
+"NDUFA2",
+"NDUFA3",
+"NDUFA4",
+"NDUFA5",
+"NDUFA6",
+"NDUFA7",
+"NDUFA8",
+"NDUFA9",
+"NDUFAB1",
+"NDUFAF1",
+"NDUFAF2",
+"NDUFB1",
+"NDUFB10",
+"NDUFB11",
+"NDUFB2",
+"NDUFB3",
+"NDUFB4",
+"NDUFB5",
+"NDUFB6",
+"NDUFB7",
+"NDUFB8",
+"NDUFB9",
+"NDUFC1",
+"NDUFC2",
+"NDUFC2-KCTD14",
+"NDUFS1",
+"NDUFS2",
+"NDUFS3",
+"NDUFS4",
+"NDUFS5",
+"NDUFS6",
+"NDUFS7",
+"NDUFS8",
+"NDUFV1",
+"NDUFV2",
+"NDUFV3",
+"NNT",
+"OGDH",
+"OGDHL",
+"OXA1L",
+"PDHA1",
+"PDHA2",
+"PDHB",
+"PINK1",
+"POLG2",
+"PPARGC1A",
+"RT14",
+"SCO2",
+"SDHA",
+"SDHAF2",
+"SDHB",
+"SDHC",
+"SDHD",
+"SIRT3",
+"SLC25A12",
+"SLC25A13",
+"SLC25A18",
+"SUCLA2",
+"SUCLG1",
+"SUCLG2",
+"SURF1",
+"UQCC3",
+"UQCR10",
+"UQCR11",
+"UQCRB",
+"UQCRC1",
+"UQCRC2",
+"UQCRFS1",
+"UQCRH",
+"UQCRHL",
+"SLC25A14",
+"IMMP2L",
+"UQCRQ",
+"CYP1A2",
+"TAZ",
+"UCN",
+"SLC25A22")
+
+```
+
+```{r volcano cand1, fig.width = 5, fig.height = 5}
+colnames(DEP_output)
+pdf('cand1_no_overlap.pdf')
+ggplot(DEP_output, aes(x=cand1_vs_Ctrl_ratio, y=-log10(cand1_vs_Ctrl_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_classic()+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(cand1_vs_Ctrl_significant == TRUE & cand1_vs_Ctrl_ratio>1.499 & cand1_without_overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(name == "DS1"), color = "seagreen4", size = 3), dpi = 300)+
+    geom_vline(xintercept = 0) +
+  rasterise(geom_point(data = DEP_output %>% filter(name %in% proteasome_complex & cand1_without_overlap=="yes" ), color = "firebrick3", size = 2), dpi = 300)+
+   rasterise(geom_point(data = DEP_output %>% filter(name %in% mito_transport & cand1_without_overlap=="yes" ), color = "dodgerblue3", size = 2), dpi = 300)+
+    rasterise(geom_point(data = DEP_output %>% filter(name %in% cellular_respiration & cand1_without_overlap=="yes" ), color = "tan2", size = 2), dpi = 300)+
+    coord_cartesian(xlim = c(-10,15 ), ylim = c(0, 40)) +
+    labs(title = "cand1", subtitle = "red: Proteasome, blue: mito_transport, orange: cellular respiration ")+
+ geom_label_repel(data = DEP_output %>% filter(name %in% proteasome_complex & cand1_without_overlap=="yes" ), color = "firebrick3",size=2,  min.segment.length=0, max.overlaps = 20)+
+   geom_label_repel(data = DEP_output %>% filter(name %in% mito_transport & cand1_without_overlap=="yes" ), color = "dodgerblue3",size=2,  min.segment.length=0, max.overlaps = 20)+
+   geom_label_repel(data = DEP_output %>% filter(name %in% cellular_respiration & cand1_without_overlap=="yes" ), color = "tan2",size=2,  min.segment.length=0)+
+ geom_label_repel(data = DEP_output %>% filter(name == "DS1"),label= "Bait", color = "seagreen4", min.segment.length=0,size=3)
+#dev.off()
+
+pdf('cand1_no_overlap_bigger_text.pdf')
+ggplot(DEP_output, aes(x=cand1_vs_Ctrl_ratio, y=-log10(cand1_vs_Ctrl_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_classic()+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(cand1_vs_Ctrl_significant == TRUE & cand1_vs_Ctrl_ratio>1.499 & cand1_without_overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(name == "DS1"), color = "seagreen4", size = 3), dpi = 300)+
+    geom_vline(xintercept = 0) +
+  rasterise(geom_point(data = DEP_output %>% filter(name %in% proteasome_complex & cand1_without_overlap=="yes" ), color = "firebrick3", size = 2), dpi = 300)+
+   rasterise(geom_point(data = DEP_output %>% filter(name %in% mito_transport & cand1_without_overlap=="yes" ), color = "dodgerblue3", size = 2), dpi = 300)+
+    rasterise(geom_point(data = DEP_output %>% filter(name %in% cellular_respiration & cand1_without_overlap=="yes" ), color = "tan2", size = 2), dpi = 300)+
+    coord_cartesian(xlim = c(-10,15 ), ylim = c(0, 40)) +
+    labs(title = "cand1", subtitle = "red: Proteasome, blue: mito_transport, orange: cellular respiration ")+
+ geom_label_repel(data = DEP_output %>% filter(name %in% proteasome_complex & cand1_without_overlap=="yes" ), color = "firebrick3",size=5,  min.segment.length=0, max.overlaps = 20)+
+   geom_label_repel(data = DEP_output %>% filter(name %in% mito_transport & cand1_without_overlap=="yes" ), color = "dodgerblue3",size=5,  min.segment.length=0, max.overlaps = 20)+
+   geom_label_repel(data = DEP_output %>% filter(name %in% cellular_respiration & cand1_without_overlap=="yes" ), color = "tan2",size=5,  min.segment.length=0)+
+ geom_label_repel(data = DEP_output %>% filter(name == "DS1"),label= "Bait", color = "seagreen4", min.segment.length=0,size=5)
+dev.off()
+
+
+```
+#volcano plot for candidate 11
+```{r GEO cand11, fig.width = 5, fig.height = 5}
+#cholest binding, (GO: 0015485), 51 terms
+cholest_bind=c("OSBPL7",
+"PROM1",
+"STARD3NL",
+"NPC1L1",
+"OSBPL5",
+"GRAMD1B",
+"NR1H3",
+"SOAT1",
+"OSBPL3",
+"SIDT1",
+"OSBPL6",
+"CETP",
+"SULT2B1",
+"GRAMD1A",
+"OSBPL8",
+"TSPO",
+"SYP",
+"CAV1",
+"ERLIN1",
+"APOA5",
+"APOA4",
+"APOC3",
+"CD81",
+"TSPO2",
+"SCP2",
+"APOA1",
+"NPC2",
+"OSBPL2",
+"STARD3",
+"SCARB2",
+"OSBPL1A",
+"NPC1",
+"OSBPL10",
+"STAR",
+"ERLIN2",
+"PMP2",
+"PROM2",
+"APOA2",
+"ABCG1",
+"STARD4",
+"ABCA1",
+"VDAC2",
+"SOAT2",
+"STARD5",
+"APOF",
+"GRAMD1C",
+"OSBP2",
+"PTCH1",
+"APOD",
+"ANXA6",
+"VDAC1")
+
+#transport (GO:0006810, has over 4500 terms so just use the interactors here)
+transport=c("FLOT1",
+"CAV1",
+"VDAC1",
+"TOMM40",
+"PHB",
+"S100AB",
+"FAF2",
+"COPA",
+"SERPINB6",
+"STOM",
+"SLC35E1",
+"LMNA",
+"STOML2",
+"UNC119B",
+"APOB",
+"MX2",
+"CYB5R3",
+"SOAT1")
+
+# ER (GO:0005783, has over 1400 terms so just use interactors here)
+ER=c("CAV1",
+"CYB5R3",
+"SOAT1",
+"APOB",
+"HSD17B11",
+"STOM",
+"TMEM43",
+"FAF2")
+
+#Mito outer membrane (GO:0005741)
+mito_out=c("BAD",
+"SARM1",
+"AGK",
+"DNAJC11",
+"MGST1",
+"TRAF3IP3",
+"BID",
+"TOMM34",
+"AGPAT4",
+"BAK1",
+"MYOC",
+"AIFM2",
+"LETMD1",
+"CASP8",
+"COASY",
+"ACSL4",
+"FUNDC1",
+"MAOB",
+"SLC44A1",
+"ACACB",
+"TIGAR",
+"VDAC3",
+"EXD2",
+"PGR",
+"STARD7",
+"PPP1R15A",
+"BAX",
+"MT3",
+"DNM1L",
+"MAVS",
+"MUL1",
+"SH3GLB1",
+"SOX10",
+"TOMM22",
+"CYB5R3",
+"HMOX1",
+"TSPO",
+"MIEF1",
+"SAMM50",
+"SLC8A3",
+"PGRMC1",
+"TAFAZZIN",
+"ARMCX3",
+"CYB5B",
+"BMF",
+"GDAP1",
+"ARMC1",
+"BNIP3L",
+"DMPK",
+"BBC3",
+"CHCHD3",
+"TRIM14",
+"SEPTIN4",
+"RPS6KB1",
+"VAT1",
+"MTCH2",
+"CPT1A",
+"AMBRA1",
+"DAO",
+"SLC11A2",
+"CYP27B1",
+"WASF1",
+"HSPA9",
+"THG1L",
+"ABCB6",
+"ATF2",
+"EPHA4",
+"MFN2",
+"KMO",
+"MTARC2",
+"CNR1",
+"RAB32",
+"ARG1",
+"FOXO3",
+"GPAM",
+"AKAP1",
+"CISD1",
+"ACSL3",
+"FAM210B",
+"ZNFX1",
+"MSTO1",
+"RHOT1",
+"ARMCX1",
+"RAC2",
+"MTX2",
+"VPS13C",
+"BCL2L2",
+"TOMM40",
+"RTN4IP1",
+"ASS1",
+"RAF1",
+"IMMT",
+"SPART",
+"KRAS",
+"RSAD2",
+"LPIN1",
+"USP30",
+"ATP5MC2",
+"RAB11FIP5",
+"HINT2",
+"BPHL",
+"MTCH1",
+"MGARP",
+"RMDN3",
+"BCL2L10",
+"HADHB",
+"ATAD1",
+"RNF185",
+"VAMP1",
+"BCL2A1",
+"RHOT2",
+"PMAIP1",
+"MCL1",
+"PI4KB",
+"HAX1",
+"RPS27A",
+"CISD2",
+"NIPSNAP2",
+"FATE1",
+"MIGA2",
+"UBC",
+"QTRT2",
+"ACSL1",
+"BCL2L11",
+"TOMM70",
+"ATP5MC3",
+"APOOL",
+"AGPAT5",
+"SFXN2",
+"MTERF3",
+"PPP2R2B",
+"HK1",
+"ARMC12",
+"PINK1",
+"TOMM40L",
+"HK2",
+"CHCHD6",
+"NLRX1",
+"SPATA18",
+"SLC25A46",
+"ACSL6",
+"VDAC2",
+"FUNDC2",
+"MOAP1",
+"IFI27",
+"SPATA19",
+"C11orf65",
+"CYB5A",
+"MFF",
+"CPT1C",
+"UBB",
+"MFN1",
+"BCL2L1",
+"BCL2",
+"RHOD",
+"MTX1",
+"MICOS10",
+"TOMM20",
+"CNP",
+"MICOS13",
+"MLXIP",
+"TOMM5",
+"BNIP3",
+"BOK",
+"MTX3",
+"ULK1",
+"MIEF2",
+"PLEC",
+"TUFM",
+"PLD6",
+"MIGA1",
+"STING1",
+"SNN",
+"APOO",
+"ARMCX2",
+"BRI3BP",
+"PRKN",
+"MTARC1",
+"GPAT2",
+"PPP1CC",
+"PDE2A",
+"PLA2G2A",
+"LRRK2",
+"MAOA",
+"GK2",
+"TOMM7",
+"TOMM20L",
+"ACSL5",
+"VPS13A",
+"MARCHF5",
+"MTOR",
+"GK",
+"OPA1",
+"DMD",
+"ARMCX6",
+"NEU4",
+"CPT1B",
+"QTRT1",
+"SYNJ2BP",
+"VDAC1",
+"FIS1",
+"TOMM6",
+"PHB2",
+"UBA52",
+"PIGBOS1",
+"GK3P",
+"STMP1",
+"PGAM5",
+"BCL2L2-PABPN1",
+"MYO19")
+
+
+#without taking overlap into account had other terms:
+#make list of organic substance transport proteins (GO:0071702) on string/GO:BP, driver term on gprofiler, 21/2173
+org_subst_transp <- c(
+  "APOB",
+"ARF1",
+"CAV1",
+"COPA",
+"CSE1L",
+"FAF2",
+"HSPD1",
+"LMNA",
+"PHB2",
+"RPS27A",
+"SEC61A1",
+"SLC16A1",
+"SLC1A5",
+"SOAT1",
+"FLOT1",
+"XPO1",
+"TOMM40",
+"SLC2A1",
+"ARL1",
+"MX2",
+"UNC119B"
+)
+
+# make list of mito_org (GO:0007005) on string/GO:BP, driver term on gprofiler, 11/452
+mito_orga <- c(
+"ATAD3A",
+"ATAD3B",
+"CHCHD3",
+"HSPD1",
+"IMMT",
+"PHB",
+"PHB2",
+"STOML2",
+"TOMM40",
+"SQSTM1",
+"MX2")
+```
+
+```{r volcano cand11, fig.width = 5, fig.height = 5}
+colnames(DEP_output)
+#pdf('cand11_no_overlap.pdf')
+ggplot(DEP_output, aes(x=cand11_vs_Ctrl_ratio, y=-log10(cand11_vs_Ctrl_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_bw()+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(cand11_vs_Ctrl_significant == TRUE & cand11_vs_Ctrl_ratio>1.4999 & cand11_without_overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(name == "PS01753"), color = "seagreen4", size = 3), dpi = 300)+
+    geom_vline(xintercept = 0) +
+   rasterise(geom_point(data = DEP_output %>% filter(name %in% transport & cand11_without_overlap=="yes" ), color = "dodgerblue3", size = 2), dpi = 300)+
+    rasterise(geom_point(data = DEP_output %>% filter(name %in% ER & cand11_without_overlap=="yes" ), color = "tan2", size = 2), dpi = 300)+
+    rasterise(geom_point(data = DEP_output %>% filter(name %in% cholest_bind & cand11_without_overlap=="yes" ), color = "firebrick3", size = 2), dpi = 300)+
+      coord_cartesian(xlim = c(-10,20 ), ylim = c(0, 45)) +
+    labs(title = "cand11", subtitle = "red: cholesterol binding, blue: transport, orange: ER , also have some mito proteins see R/excel")+
+   geom_label_repel(data = DEP_output %>% filter(name %in% transport & cand11_without_overlap=="yes" ), color = "dodgerblue3",size=2,  min.segment.length=0, max.overlaps = 20)+
+   geom_label_repel(data = DEP_output %>% filter(name %in% ER & cand11_without_overlap=="yes" ), color = "tan2",size=2,  min.segment.length=0)+
+  geom_label_repel(data = DEP_output %>% filter(name %in% cholest_bind & cand11_without_overlap=="yes" ), color = "firebrick3",size=2,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output %>% filter(name == "PS01753"),label= "Bait", color = "seagreen4", min.segment.length=0,size=3)
+#dev.off()
+
+pdf('cand11_no_overlap_bigger_text.pdf')
+ggplot(DEP_output, aes(x=cand11_vs_Ctrl_ratio, y=-log10(cand11_vs_Ctrl_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_classic()+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(cand11_vs_Ctrl_significant == TRUE & cand11_vs_Ctrl_ratio>1.4999 & cand11_without_overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(name == "PS01753"), color = "seagreen4", size = 3), dpi = 300)+
+    geom_vline(xintercept = 0) +
+   rasterise(geom_point(data = DEP_output %>% filter(name %in% transport & cand11_without_overlap=="yes" ), color = "dodgerblue3", size = 2), dpi = 300)+
+    rasterise(geom_point(data = DEP_output %>% filter(name %in% ER & cand11_without_overlap=="yes" ), color = "tan2", size = 2), dpi = 300)+
+    rasterise(geom_point(data = DEP_output %>% filter(name %in% cholest_bind & cand11_without_overlap=="yes" ), color = "firebrick3", size = 2), dpi = 300)+
+      coord_cartesian(xlim = c(-10,20 ), ylim = c(0, 45)) +
+    labs(title = "cand11", subtitle = "red: cholesterol binding, blue: transport, orange: ER , also have some mito proteins see R/excel")+
+   geom_label_repel(data = DEP_output %>% filter(name %in% transport & cand11_without_overlap=="yes" ), color = "dodgerblue3",size=5,  min.segment.length=0, max.overlaps = 20)+
+   geom_label_repel(data = DEP_output %>% filter(name %in% ER & cand11_without_overlap=="yes" ), color = "tan2",size=5,  min.segment.length=0)+
+  geom_label_repel(data = DEP_output %>% filter(name %in% cholest_bind & cand11_without_overlap=="yes" ), color = "firebrick3",size=5,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output %>% filter(name == "PS01753"),label= "Bait", color = "seagreen4", min.segment.length=0,size=5)
+dev.off()
+
+```
+#volcano plot for candidate 19
+```{r GEO cand19, fig.width = 5, fig.height = 5}
+
+#cell adhesion molecule binding (GO:0050839)
+cell_adh=c("LASP1",
+"ITGAL",
+"ITGA3",
+"ITGA2B",
+"CX3CL1",
+"BAIAP2L1",
+"PROM1",
+"ADAM22",
+"TENM1",
+"CD9",
+"NISCH",
+"LYPLA2",
+"ANLN",
+"GPRC5A",
+"IGF1",
+"CNTN1",
+"MRE11",
+"NRXN3",
+"SNX1",
+"IBSP",
+"VCL",
+"CASR",
+"CDH1",
+"CDH10",
+"CAPG",
+"CTNNA1",
+"HSPA5",
+"DSG2",
+"LIMA1",
+"LAMA3",
+"PKP2",
+"CDH3",
+"CCN5",
+"CNN2",
+"SLC9A3R2",
+"PKN2",
+"ZC3H15",
+"SLK",
+"CTNNA2",
+"PFKP",
+"PKM",
+"DHX29",
+"CDH19",
+"ADGRL1",
+"ACTN1",
+"EPN2",
+"MARK2",
+"PVR",
+"ADAM11",
+"FERMT2",
+"PICALM",
+"NOTCH3",
+"CDHR2",
+"ENO1",
+"FSCN1",
+"DLG1",
+"ICAM3",
+"ACTN2",
+"CAPZB",
+"FBLN1",
+"ITGA8",
+"FAP",
+"CDH17",
+"PTPRH",
+"PSEN1",
+"CDH7",
+"PKP1",
+"BZW1",
+"COBLL1",
+"ITGB5",
+"ERC1",
+"ITGAE",
+"CHMP2B",
+"COL16A1",
+"RAB10",
+"IGSF9",
+"CTTN",
+"EPS15",
+"CHMP5",
+"ADD1",
+"DOCK9",
+"SNX5",
+"RPL6",
+"GCN1",
+"FXYD5",
+"LTBP4",
+"NUDC",
+"ICAM1",
+"GOLGA3",
+"NRCAM",
+"LAMB1",
+"ITGA6",
+"CD200",
+"EZR",
+"TBC1D2",
+"HSP90AB1",
+"DSP",
+"SH3GLB1",
+"CDHR5",
+"MADCAM1",
+"ARVCF",
+"RANBP1",
+"CRKL",
+"TBC1D10A",
+"MICALL1",
+"PACSIN2",
+"MYH9",
+"RANGAP1",
+"AHSA1",
+"EIF5",
+"FERMT1",
+"NOP56",
+"MAPRE1",
+"CHMP4B",
+"CDH20",
+"VAPA",
+"EMD",
+"CD40LG",
+"STK24",
+"OLFM4",
+"UBFD1",
+"EHD4",
+"TJP1",
+"EIF3E",
+"CCN4",
+"NDRG1",
+"EEF1D",
+"ADAM2",
+"PPP1R13L",
+"FCER2",
+"TJP3",
+"PLIN3",
+"ICAM4",
+"ICAM5",
+"COMP",
+"ITGB8",
+"PTN",
+"ZC3HAV1",
+"PTPRZ1",
+"YKT6",
+"EIF4H",
+"ECM2",
+"PDLIM1",
+"CXCL12",
+"CDH23",
+"PFN1",
+"ICAM2",
+"LRRC59",
+"YWHAE",
+"VTN",
+"CPE",
+"RPL34",
+"HSPA8",
+"EHD1",
+"NRXN2",
+"EIF4G2",
+"DDX6",
+"CBL",
+"NECTIN1",
+"CD81",
+"VWF",
+"PPFIBP1",
+"KRT18",
+"PTPN6",
+"STK38",
+"PTK7",
+"CCN6",
+"CDH9",
+"CLINT1",
+"THBS4",
+"CDH6",
+"FGF1",
+"RARS1",
+"DBN1",
+"RPL24",
+"ADAM23",
+"ACVR1",
+"ITGB6",
+"ITGA4",
+"SPTBN1",
+"RTN4",
+"FN1",
+"STAT1",
+"TXNDC9",
+"HDLBP",
+"PARK7",
+"CAPZA1",
+"LGALS8",
+"CD46",
+"PRDX1",
+"CNN3",
+"PRDX6",
+"ESYT2",
+"CCN2",
+"SPP1",
+"PPL",
+"TJP2",
+"ITGB1BP1",
+"CTNNAL1",
+"EPCAM",
+"PCMT1",
+"TNN",
+"TGFBI",
+"TMPO",
+"TRIM25",
+"SEPTIN7",
+"CALD1",
+"GIPC1",
+"VAPB",
+"CDH26",
+"LRRFIP1",
+"AHNAK",
+"IL1B",
+"VASP",
+"MMP24",
+"KIRREL2",
+"KTN1",
+"TSPAN8",
+"PTPRB",
+"EPS15L1",
+"MACF1",
+"PAICS",
+"KDR",
+"CDC42EP1",
+"CDHR3",
+"MYO1B",
+"PALLD",
+"CDH15",
+"NECTIN2",
+"SNX9",
+"AFDN",
+"ACTN4",
+"COL5A1",
+"PAK4",
+"LAMA5",
+"EIF2S3",
+"ARHGEF16",
+"EPS8L1",
+"LILRB2",
+"GFAP",
+"NINJ1",
+"DNAJB1",
+"CC2D1A",
+"ARFIP2",
+"RAN",
+"ITGB4",
+"VSTM2L",
+"ANGPTL3",
+"SLC14A2",
+"MPRIP",
+"TRPC4",
+"POSTN",
+"LGALS12",
+"SWAP70",
+"NUMB",
+"CNTN6",
+"LDHA",
+"DSC2",
+"ARGLU1",
+"ADAMTS8",
+"ANXA1",
+"CEMIP2",
+"P2RX4",
+"TES",
+"ITGA7",
+"FLNB",
+"LCP1",
+"GPNMB",
+"BZW2",
+"DBNL",
+"CIB2",
+"ABI1",
+"NIBAN2",
+"DAB2IP",
+"CCN3",
+"UBAP2",
+"TLN1",
+"SDCBP",
+"TRIM29",
+"RDX",
+"THBS1",
+"ITGA11",
+"PAK6",
+"ADAM10",
+"FNBP1L",
+"RAB1A",
+"EMILIN1",
+"ANXA7",
+"MYPN",
+"ATIC",
+"IDH1",
+"OLA1",
+"ITGAV",
+"USP8",
+"TMOD3",
+"SEMA7A",
+"FGF2",
+"USO1",
+"ITGB7",
+"DIAPH3",
+"CDH24",
+"FBLN5",
+"MFGE8",
+"UNC45A",
+"IQGAP1",
+"ITGAX",
+"CDH11",
+"CDH13",
+"RPS2",
+"CSNK1D",
+"SH3GL1",
+"SCYL1",
+"PSMB6",
+"EPHA2",
+"EFHD2",
+"SERBP1",
+"CCN1",
+"PTPRF",
+"ITGA10",
+"CGN",
+"ADAM15",
+"PKP4",
+"CNTN4",
+"ITGA9",
+"PHLDB2",
+"EIF2A",
+"SFRP2",
+"CDH18",
+"TENM2",
+"ARHGAP18",
+"EGFR",
+"NLGN4X",
+"MSN",
+"ITGB1BP2",
+"RPL7A",
+"SH3GLB2",
+"LRRC4C",
+"TNKS1BP1",
+"PTPRJ",
+"TENM4",
+"ESAM",
+"KIRREL3",
+"CDH22",
+"FERMT3",
+"PLCB3",
+"ALDOA",
+"CNTN5",
+"MPP7",
+"ITGB1",
+"CDH8",
+"CD226",
+"ANK3",
+"TWF1",
+"FER",
+"PTPRO",
+"ADAM8",
+"ADAM17",
+"GFRA1",
+"DST",
+"BAG3",
+"DMP1",
+"UTRN",
+"CAST",
+"ASAP1",
+"PTPRD",
+"THY1",
+"ROBO4",
+"ROBO3",
+"CDH12",
+"PRKCA",
+"OBSCN",
+"CXADR",
+"JAM2",
+"ADAMTS5",
+"LARP1",
+"CCT8",
+"NPTN",
+"ITGAD",
+"NRG1",
+"MMP14",
+"CCNB2",
+"FMNL2",
+"NCK1",
+"WASF2",
+"CD1D",
+"TAGLN2",
+"F11R",
+"LAD1",
+"ITGB2",
+"ADAMTS13",
+"JAML",
+"ABCF3",
+"NPHS1",
+"ITGA5",
+"STX5",
+"RPL29",
+"PLPP3",
+"NEXN",
+"NTNG1",
+"VCAM1",
+"PDLIM5",
+"S100A11",
+"CIP2A",
+"NFASC",
+"S100P",
+"ITGA2",
+"EDIL3",
+"ESM1",
+"YWHAZ",
+"SYK",
+"HNRNPK",
+"GAPVD1",
+"NLGN4Y",
+"JAM3",
+"FBN1",
+"DCHS1",
+"YWHAB",
+"GOLGA2",
+"IGF2",
+"EEF2",
+"GLOD4",
+"EVPL",
+"SLC3A2",
+"RPSA",
+"CTNNB1",
+"VASN",
+"SEPTIN2",
+"TNXB",
+"ATXN2L",
+"COL3A1",
+"ADAM9",
+"NPNT",
+"STXBP6",
+"COL4A3",
+"PTK2",
+"PCBP1",
+"FASN",
+"NLGN1",
+"CTNND2",
+"ITGAM",
+"NLGN2",
+"CDH2",
+"EMB",
+"KIF5B",
+"RSL1D1",
+"FGG",
+"FGA",
+"FGB",
+"DSCAM",
+"FRMD5",
+"TLN2",
+"LAMB2",
+"BSG",
+"PPP1CA",
+"HCFC1",
+"CORO1B",
+"PTPRM",
+"JUP",
+"SPTBN2",
+"CCS",
+"RPL15",
+"KLC2",
+"CKAP5",
+"ARHGAP1",
+"PTPN2",
+"RUVBL1",
+"SFN",
+"BAIAP2",
+"CDK5R1",
+"VSIG10",
+"DSCAML1",
+"EPS8L2",
+"CD151",
+"NECTIN3",
+"PLEC",
+"CALR",
+"CDH4",
+"PTPN11",
+"CDH5",
+"PDXDC1",
+"NRXN1",
+"PUF60",
+"EXOC3",
+"PAK2",
+"MB21D2",
+"SCRIB",
+"CLDN7",
+"IST1",
+"IZUMO1",
+"ANXA2",
+"CADM1",
+"CTNNA3",
+"KIRREL1",
+"CNTN2",
+"PKP3",
+"SEPTIN9",
+"H1-10",
+"ROBO2",
+"RAB11B",
+"P4HB",
+"MRTFB",
+"GLDN",
+"NF2",
+"SHTN1",
+"BCAM",
+"ISG15",
+"RPL14",
+"HMGB1",
+"PTPRT",
+"PPIA",
+"NLGN3",
+"PTPN1",
+"CD47",
+"FLNA",
+"SRC",
+"H3C12",
+"SND1",
+"H3C4",
+"SPTAN1",
+"PARVA",
+"RPS26",
+"SIRPA",
+"CD2AP",
+"RPL23A",
+"ITGBL1",
+"CTNND1",
+"PLXNB3",
+"EGFL6",
+"DMD",
+"GIGYF2",
+"BMPR2",
+"HSPA1A",
+"RACK1",
+"CD177",
+"SNX2",
+"S1PR3",
+"CLIC1",
+"EMP2",
+"ITGA1",
+"TSPAN4",
+"PPME1",
+"DDX3X",
+"TENM3",
+"PI4KA",
+"TWF2",
+"ACTN3",
+"LYN",
+"EEF1G",
+"ITGB3",
+"None",
+"S1PR2",
+"H3C8",
+"H3C6",
+"H3C11",
+"H3C1",
+"H3C7",
+"H3C10",
+"VSIG10L2",
+"H3C2",
+"H3C3",
+"RPSAP58")
+
+#guanyl nucleotide binding(GO:0019001)
+guanyl=c("ARF5",
+"FKBP4",
+"RALA",
+"RHOBTB2",
+"EHD3",
+"EHD2",
+"RRAGD",
+"ADSS2",
+"TUBG2",
+"RAB27B",
+"LSG1",
+"ARHGEF5",
+"HHAT",
+"GNA15",
+"GUCY1B1",
+"GNAI3",
+"MPPED2",
+"RHOA",
+"RAB27A",
+"GUCY2C",
+"CNGB1",
+"CDC42",
+"RHOBTB1",
+"TUBE1",
+"RAB7A",
+"TUBA3D",
+"SAR1A",
+"DNM2",
+"RABL2B",
+"RAB21",
+"RRAGB",
+"NOA1",
+"RAB10",
+"MTIF2",
+"SEPHS1",
+"GNAO1",
+"GNAS",
+"DNM1L",
+"GNA11",
+"REM1",
+"UPRT",
+"PDE6C",
+"HSP90AB1",
+"RAB18",
+"SEPTIN3",
+"RTCB",
+"GTPBP1",
+"RAB36",
+"RASL10A",
+"RASD2",
+"MIEF1",
+"IFT27",
+"NIN",
+"EIF5",
+"ARHGAP5",
+"SRP54",
+"PCK2",
+"TUBB1",
+"MTG2",
+"EEF1A2",
+"ARFRP1",
+"SAMHD1",
+"GUCY2F",
+"PRPS2",
+"RAB40AL",
+"RP2",
+"GSPT1",
+"RASL12",
+"RAB11A",
+"EHD4",
+"RHOV",
+"RAB2A",
+"SPAG1",
+"TUBB4A",
+"RAB3D",
+"RAB3A",
+"GTPBP10",
+"GIMAP2",
+"URGCP",
+"RHEB",
+"DNM1",
+"DDX58",
+"GTPBP4",
+"SEPTIN4",
+"TUBD1",
+"RASD1",
+"DRG2",
+"RAB5C",
+"RND2",
+"EFTUD2",
+"RAB34",
+"UCP1",
+"EHD1",
+"GPN3",
+"RERGL",
+"RAB5B",
+"RAB35",
+"RNGTT",
+"RAB23",
+"HBS1L",
+"PDE10A",
+"THG1L",
+"TRIM23",
+"ARL6",
+"GNAT1",
+"GNAI2",
+"RTKN",
+"DNAJC27",
+"RND3",
+"RAP1A",
+"RHOU",
+"MFN2",
+"RRAGC",
+"GBP3",
+"GBP1",
+"RAB29",
+"RAB32",
+"RAB14",
+"EIF2B2",
+"RHOQ",
+"ATL2",
+"GNA13",
+"ARL1",
+"RASL11A",
+"SEPTIN7",
+"ARL4A",
+"TUBA1B",
+"RAB9B",
+"RAB9A",
+"RAP2C",
+"RAB38",
+"RAB22A",
+"PCK1",
+"IRGC",
+"MOCS1",
+"RAB17",
+"RAP2A",
+"SEPTIN6",
+"RRAS",
+"RHOJ",
+"RHOT1",
+"RAP1B",
+"TUBA4A",
+"GNAI1",
+"RASL11B",
+"GNAZ",
+"RAC2",
+"RNF112",
+"IFT22",
+"PDE11A",
+"RAB2B",
+"CRACR2A",
+"GNL3L",
+"GTPBP3",
+"EIF2S3",
+"TUBG1",
+"GCH1",
+"ARFIP2",
+"CNGA4",
+"RAN",
+"EEFSEC",
+"LANCL2",
+"GUCY2D",
+"ERAL1",
+"DAP3",
+"RAB25",
+"CPLANE2",
+"NMUR2",
+"GIMAP6",
+"GIMAP4",
+"AGAP3",
+"KRAS",
+"RRAS2",
+"ARL8B",
+"GNAT2",
+"ARF3",
+"RERG",
+"RAB33A",
+"GNL2",
+"AGAP2",
+"RAC1",
+"TUBB2A",
+"TUBB2B",
+"RAB30",
+"IFI44L",
+"RAB1A",
+"ARL3",
+"OLA1",
+"PRKG2",
+"PDE5A",
+"SEPTIN11",
+"PDE6H",
+"RHOF",
+"RAB20",
+"REM2",
+"RAB15",
+"EFL1",
+"SEPTIN12",
+"RHOT2",
+"GNAL",
+"RAB40B",
+"ARL5C",
+"GPN2",
+"RAB13",
+"RIT1",
+"ARF1",
+"ARL8A",
+"RHOB",
+"RALB",
+"RABL2A",
+"CNGA3",
+"RAB5A",
+"DYNC1LI1",
+"RABL3",
+"SRPRB",
+"GNA12",
+"RAB19",
+"RAB41",
+"MFHAS1",
+"AK3",
+"GLUD1",
+"MTG1",
+"MMAA",
+"GUF1",
+"TUBA3E",
+"ARL11",
+"RIT2",
+"GUCY1A2",
+"SAR1B",
+"RAB3C",
+"LRRK1",
+"GBP5",
+"RAB6B",
+"SEPTIN14",
+"RHOC",
+"RRAGA",
+"RAB39B",
+"GNA14",
+"GNAQ",
+"EEF1A1",
+"MX1",
+"RAB28",
+"AGAP1",
+"MRAS",
+"EIF5B",
+"NPR2",
+"ARHGAP35",
+"AK4",
+"DIRAS3",
+"GBP2",
+"GBP4",
+"ARL5A",
+"GTPBP8",
+"GNL3",
+"GUCY1A1",
+"RHOBTB3",
+"GFM2",
+"SEPTIN8",
+"CGAS",
+"GEM",
+"NUDT2",
+"DIRAS2",
+"RASEF",
+"ARF6",
+"BMS1",
+"ARL5B",
+"RAB8B",
+"NOLC1",
+"RRAD",
+"ACSM1",
+"SCG5",
+"IRGQ",
+"RAB8A",
+"RHEBL1",
+"TUBA1A",
+"TUBA1C",
+"RAB4B",
+"EEF2",
+"TSR1",
+"RAB26",
+"RAB4A",
+"NKIRAS2",
+"ARF4",
+"SEPTIN2",
+"RHOH",
+"RAB31",
+"GFM1",
+"RAB3B",
+"RAB24",
+"ARL13B",
+"NPR1",
+"RAC3",
+"CNGB3",
+"INSR",
+"MFN1",
+"GIMAP8",
+"RAB4B-EGLN2",
+"RAB33B",
+"SUCLG2",
+"GTPBP2",
+"RAB40A",
+"RND1",
+"RAB43",
+"RAB37",
+"ACSM6",
+"RHOD",
+"TUBB8B",
+"GMPPB",
+"SLC19A1",
+"ARL13A",
+"HRAS",
+"RAB1B",
+"ARL10",
+"RAB6A",
+"ARL4D",
+"TUBB6",
+"DIRAS1",
+"RHOG",
+"TUBAL3",
+"GTPBP6",
+"TUFM",
+"GIMAP7",
+"RAB39A",
+"CIITA",
+"ARL14",
+"SEPTIN1",
+"EIF2S3B",
+"MAB21L1",
+"RAP2B",
+"GLUD2",
+"SRPRA",
+"GBP6",
+"MX2",
+"ACSM5",
+"TUBA8",
+"CNGA2",
+"STING1",
+"SEPTIN9",
+"SEPTIN5",
+"ATL3",
+"ADSS1",
+"RAB11B",
+"ARL15",
+"PDE6G",
+"PRKG1",
+"DRG1",
+"SRL",
+"ARL17A",
+"SEPTIN10",
+"PDE2A",
+"ERAS",
+"ARL4C",
+"RAB42",
+"TUBB4B",
+"LRRK2",
+"NUGGC",
+"GSPT2",
+"TUBB",
+"GIMAP5",
+"ARL9",
+"RABL6",
+"DAPK1",
+"ANXA6",
+"RAB40C",
+"NKIRAS1",
+"DNM3",
+"TUBA3C",
+"None",
+"ATL1",
+"CNGA1",
+"GPN1",
+"OPA1",
+"TGM2",
+"GNL1",
+"RANBP17",
+"RAB12",
+"GIMAP1",
+"NRAS",
+"ARL2",
+"GBP7",
+"ARL16",
+"GNAT3",
+"RAB6C",
+"ARL17B",
+"RAB6D",
+"IRGM",
+"NME1",
+"NME2",
+"TUBA4B",
+"GIMD1",
+"FPGT",
+"RAB44",
+"TUBB3",
+"TUBB8",
+"RASL10B",
+"ARL2-SNX15",
+"RCC1L",
+"PIP4K2B",
+"RAB7B",
+"GIMAP1-GIMAP5")
+```
+
+```{r volcano cand19, fig.width = 5, fig.height = 5}
+colnames(DEP_output)
+#pdf('cand19_no_overlap.pdf')
+ggplot(DEP_output, aes(x=cand19_vs_Ctrl_ratio, y=-log10(cand19_vs_Ctrl_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_bw()+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(cand19_vs_Ctrl_significant == TRUE & cand19_vs_Ctrl_ratio>1.4999 & cand19_without_overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(name == "PS04061"), color = "seagreen4", size = 3), dpi = 300)+
+    geom_vline(xintercept = 0) +
+   rasterise(geom_point(data = DEP_output %>% filter(name %in% cell_adh & cand19_without_overlap=="yes" ), color = "firebrick3", size = 2), dpi = 300)+
+    rasterise(geom_point(data = DEP_output %>% filter(name %in% guanyl & cand19_without_overlap=="yes" ), color = "dodgerblue3", size = 2), dpi = 300)+
+    labs(title = "cand19", subtitle = "red: cell adhesion molecule binding, blue:guanyl nucleotide binding")+
+   geom_label_repel(data = DEP_output %>% filter(name %in% guanyl & cand19_without_overlap=="yes" ), color = "dodgerblue3",size=2,  min.segment.length=0, max.overlaps = 20)+
+  geom_label_repel(data = DEP_output %>% filter(name %in% cell_adh & cand19_without_overlap=="yes" ), color = "firebrick3",size=2,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output %>% filter(name == "PS04061"),label= "Bait", color = "seagreen4", min.segment.length=0,size=3)
+#dev.off()
+
+
+pdf('cand19_no_overlap_bigger_text.pdf')
+ggplot(DEP_output, aes(x=cand19_vs_Ctrl_ratio, y=-log10(cand19_vs_Ctrl_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+ theme_classic()+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(cand19_vs_Ctrl_significant == TRUE & cand19_vs_Ctrl_ratio>1.4999 & cand19_without_overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output %>% filter(name == "PS04061"), color = "seagreen4", size = 3), dpi = 300)+
+    geom_vline(xintercept = 0) +
+   rasterise(geom_point(data = DEP_output %>% filter(name %in% cell_adh & cand19_without_overlap=="yes" ), color = "firebrick3", size = 2), dpi = 300)+
+    rasterise(geom_point(data = DEP_output %>% filter(name %in% guanyl & cand19_without_overlap=="yes" ), color = "dodgerblue3", size = 2), dpi = 300)+
+    labs(title = "cand19", subtitle = "red: cell adhesion molecule binding, blue:guanyl nucleotide binding")+
+   geom_label_repel(data = DEP_output %>% filter(name %in% guanyl & cand19_without_overlap=="yes" ), color = "dodgerblue3",size=5,  min.segment.length=0, max.overlaps = 20)+
+  geom_label_repel(data = DEP_output %>% filter(name %in% cell_adh & cand19_without_overlap=="yes" ), color = "firebrick3",size=5,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output %>% filter(name == "PS04061"),label= "Bait", color = "seagreen4", min.segment.length=0,size=5)
+dev.off()
+```
+
+
+#Setup volcano plots for candidate 2 and candidate 12
+```{r setup2 to different table}
+DEP_output_2 <- read.delim("cand2_12/20221108_2_12_NO_OVERLAP_filtallreps_NOnorm_imp_min_lfc_1_5.txt")
+```
+# volanco plot for candidate 2
+```{r GEO cand2, fig.width = 5, fig.height = 5}
+#mRNA 3'-UTR AU-rich region binding (GO:0035925)
+AU_rich= c("ELAVL1",
+"CPSF1",
+"KHSRP",
+"CPEB3",
+"APOBEC1",
+"RBM24",
+"TIA1",
+"EXOSC8",
+"EXOSC9",
+"ZFP36",
+"ILF3",
+"CPEB2",
+"HNRNPD",
+"RBMS3",
+"TIAL1",
+"ZFP36L2",
+"ELAVL4",
+"ZC3H12A",
+"NUDT21",
+"DHX36",
+"HNRNPA0",
+"EXOSC4",
+"MEX3D",
+"ZFP36L1",
+"ELAVL3",
+"CPEB1")
+
+
+#previous terms with overlap included:
+#make list of 11 components according to reactome pathways(on string)
+pexophagy <- c(
+    "UBA52",
+"SQSTM1",
+ "USP30",
+"EPAS1",
+ "MAP1LC3B",
+"RPS27A",
+ "ATM",
+"UBB",
+"PEX5",
+ "NBR1",
+"UBC"
+)
+
+#only 2 of them are in there
+inase <- c(
+    "DPYSL3",
+"DPYSL2"
+)
+
+#cytosol on gprofiler
+cytosol <- c(
+    "UBA52",
+"SQSTM1",
+"AMD1",
+"DPYSL2",
+"KHSRP",
+"HSD17B4",
+"MCAL1",
+"DPYSL3"
+)
+```
+
+```{r volcano cand2, fig.width = 5, fig.height = 5}
+colnames(DEP_output_2)
+#pdf('cand2_no_overlap.pdf')
+ggplot(DEP_output_2, aes(x=cand2_vs_parental_ratio, y=-log10(cand2_vs_parental_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_bw()+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output_2 %>% filter(cand2_vs_parental_significant == TRUE & cand2_vs_parental_ratio>1.4999 & cand2_no_overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+      labs(title = "cand2", subtitle = "red: mRNA 3'-UTR AU-rich region binding")+
+  rasterise(geom_point(data = DEP_output_2 %>% filter(name == "PS02457"), color = "seagreen4", size = 3), dpi = 300)+
+    geom_vline(xintercept = 0) +
+   rasterise(geom_point(data = DEP_output_2 %>% filter(name %in% AU_rich & cand2_no_overlap=="yes" ), color = "firebrick3", size = 2), dpi = 300)+
+  geom_label_repel(data = DEP_output_2 %>% filter(cand2_vs_parental_significant == TRUE & !name %in% AU_rich & !name == "PS02457" & cand2_vs_parental_ratio>1.4999 & cand2_no_overlap=="yes" ), color = "black",size=2,  min.segment.length=0, max.overlaps = 20)+
+  geom_label_repel(data = DEP_output_2%>% filter(name %in% AU_rich & cand2_no_overlap=="yes" ), color = "firebrick3",size=2,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output_2 %>% filter(name == "PS02457"),label= "Bait", color = "seagreen4", min.segment.length=0,size=3)
+#dev.off()
+
+pdf('cand2_no_overlap_bigger_text.pdf')
+ggplot(DEP_output_2, aes(x=cand2_vs_parental_ratio, y=-log10(cand2_vs_parental_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_classic()+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output_2 %>% filter(cand2_vs_parental_significant == TRUE & cand2_vs_parental_ratio>1.4999 & cand2_no_overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+      labs(title = "cand2", subtitle = "red: mRNA 3'-UTR AU-rich region binding")+
+  rasterise(geom_point(data = DEP_output_2 %>% filter(name == "PS02457"), color = "seagreen4", size = 3), dpi = 300)+
+    geom_vline(xintercept = 0) +
+   rasterise(geom_point(data = DEP_output_2 %>% filter(name %in% AU_rich & cand2_no_overlap=="yes" ), color = "firebrick3", size = 2), dpi = 300)+
+  geom_label_repel(data = DEP_output_2 %>% filter(cand2_vs_parental_significant == TRUE & !name %in% AU_rich & !name == "PS02457" & cand2_vs_parental_ratio>1.4999 & cand2_no_overlap=="yes" ), color = "black",size=5,  min.segment.length=0, max.overlaps = 20)+
+  geom_label_repel(data = DEP_output_2%>% filter(name %in% AU_rich & cand2_no_overlap=="yes" ), color = "firebrick3",size=5,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output_2 %>% filter(name == "PS02457"),label= "Bait", color = "seagreen4", min.segment.length=0,size=5)
+dev.off()
+
+```
+
+# volanco plot for candidate 12
+```{r GEO cand12, fig.width = 5, fig.height = 5}
+#too few proteins pulled-down-> no enrichment found
+
+```
+```{r volcano cand12, fig.width = 5, fig.height = 5}
+colnames(DEP_output_2)
+#pdf('cand12_no_overlap.pdf')
+ggplot(DEP_output_2, aes(x=cand12_vs_parental_ratio, y=-log10(cand12_vs_parental_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_bw()+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output_2 %>% filter(cand12_vs_parental_significant == TRUE & cand2_vs_parental_ratio>1.4999 & cand12_no_overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+      labs(title = "cand12", subtitle = "no enrichment terms found")+
+  rasterise(geom_point(data = DEP_output_2 %>% filter(name == "PL02241"), color = "seagreen4", size = 3), dpi = 300)+
+    geom_vline(xintercept = 0) +
+geom_label_repel(data = DEP_output_2 %>% filter(cand12_vs_parental_significant == TRUE & cand2_vs_parental_ratio>1.4999 & cand12_no_overlap=="yes" ), color = "black",size=2,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output_2 %>% filter(name == "PL02241"),label= "Bait", color = "seagreen4", min.segment.length=0,size=3)
+#dev.off()
+
+pdf('cand12_no_overlap_bigger_text.pdf')
+ggplot(DEP_output_2, aes(x=cand12_vs_parental_ratio, y=-log10(cand12_vs_parental_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_classic()+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output_2 %>% filter(cand12_vs_parental_significant == TRUE & cand2_vs_parental_ratio>1.4999 & cand12_no_overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+      labs(title = "cand12", subtitle = "no enrichment terms found")+
+  rasterise(geom_point(data = DEP_output_2 %>% filter(name == "PL02241"), color = "seagreen4", size = 3), dpi = 300)+
+    geom_vline(xintercept = 0) +
+geom_label_repel(data = DEP_output_2 %>% filter(cand12_vs_parental_significant == TRUE & cand2_vs_parental_ratio>1.4999 & cand12_no_overlap=="yes" ), color = "black",size=5,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output_2 %>% filter(name == "PL02241"),label= "Bait", color = "seagreen4", min.segment.length=0,size=5)
+dev.off()
+
+
+
+```
+
+
+
+
+#Setup volcano plots for candidate16
+```{r setup to 16_table}
+DEP_output_3 <- read.delim("cand16/20221108__plotted230301_NO_OVERLAP_separate_allvsall_3out4_NOnorm_imp_min_lfc_1_5.txt")
+```
+# volanco plots for candidate 16
+```{r GEO cand16, fig.width = 5, fig.height = 5}
+#RNA binding (has over 1600 proteins so just use the ones enriched, GO:0003723)
+RNA_bind=c("EIF4A1",
+"RPS6",
+"HNRNPF",
+"FARSA",
+"RPS9",
+"RPL14",
+"RPL8",
+"TUFM",
+"ELAVL1",
+"RPL26",
+"EFTUD2",
+"TCP1",
+"DHX9",
+"SYNCRIP",
+"TRIM32",
+"HIST1H4A",
+"ATP5C1",
+"ATP5A1",
+"HSPA9",
+"DCD",
+"HIST1H1B")
+
+```
+
+```{r volcano cand16 PBS condition, fig.width = 5, fig.height = 5}
+colnames(DEP_output_3)
+#plot for pbs condition
+#pdf('cand16_PBS_no_overlap.pdf')
+ggplot(DEP_output_3, aes(x=cand16_pbs_vs_parental_pbs_ratio, y=-log10(cand16_pbs_vs_parental_pbs_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_bw()+
+  coord_cartesian(xlim = c(-10,12 ), ylim = c(0, 15))+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output_3 %>% filter(cand16_pbs_vs_parental_pbs_significant == TRUE & cand16_pbs_vs_parental_pbs_ratio>1 & cand16_PBS_without.overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+      labs(title = "cand16 PBS LFC>1", subtitle = "red: RNA binding")+
+  rasterise(geom_point(data = DEP_output_3 %>% filter(name == "DS16_GFP"), color = "seagreen4", size = 3), dpi = 300)+
+    geom_vline(xintercept = 0) +
+   rasterise(geom_point(data = DEP_output_3 %>% filter(name %in% RNA_bind & cand16_PBS_without.overlap=="yes" ), color = "firebrick3", size = 2), dpi = 300)+
+  geom_label_repel(data = DEP_output_3 %>% filter(name == "LPXN"), color = "blue",size=2,  min.segment.length=0, max.overlaps = 20)+
+  geom_label_repel(data = DEP_output_3%>% filter(name %in% RNA_bind & cand16_PBS_without.overlap=="yes" ), color = "firebrick3",size=2,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output_3 %>% filter(name == "DS16_GFP"),label= "Bait", color = "seagreen4", min.segment.length=0,size=3)
+#dev.off()
+
+pdf('cand16_PBS_no_overlap_bigger_text2.pdf')
+ggplot(DEP_output_3, aes(x=cand16_pbs_vs_parental_pbs_ratio, y=-log10(cand16_pbs_vs_parental_pbs_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+   theme_bw()+
+  coord_cartesian(xlim = c(-10,12 ), ylim = c(0, 15))+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output_3 %>% filter(cand16_pbs_vs_parental_pbs_significant == TRUE & cand16_pbs_vs_parental_pbs_ratio>1 & cand16_PBS_without.overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+      labs(title = "cand16 PBS LFC>1", subtitle = "red: RNA binding")+
+  rasterise(geom_point(data = DEP_output_3 %>% filter(name == "DS16_GFP"), color = "seagreen4", size = 3), dpi = 300)+
+   rasterise(geom_point(data = DEP_output_3 %>% filter(name %in% RNA_bind & cand16_PBS_without.overlap=="yes" ), color = "firebrick3", size = 2), dpi = 300)+
+  rasterise(geom_point(data = DEP_output_3 %>% filter(name == "LPXN"), color = "blue", size = 1), dpi = 300)+
+  geom_label_repel(data = DEP_output_3 %>% filter(name == "LPXN"), color = "blue",size=5,  min.segment.length=0, max.overlaps = 20)+
+  geom_label_repel(data = DEP_output_3%>% filter(name %in% RNA_bind & cand16_PBS_without.overlap=="yes" ), color = "firebrick3",size=4,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output_3 %>% filter(name == "DS16_GFP"),label= "Bait", color = "seagreen4", min.segment.length=0,size=5)
+dev.off()
+
+```
+```{r GEO cand16 harsh, fig.width = 5, fig.height = 5}
+#no enrichment
+```
+
+```{r volcano cand16 harsh condition, fig.width = 5, fig.height = 5}
+#plot for harsh condition
+#pdf('cand16_harsh_no_overlap.pdf')
+ggplot(DEP_output_3, aes(x=cand16_harsh_vs_parental_harsh_ratio, y=-log10(cand16_harsh_vs_parental_harsh_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_bw()+
+  coord_cartesian(xlim = c(-10,12 ), ylim = c(0, 15))+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output_3 %>% filter(cand16_harsh_vs_parental_harsh_significant == TRUE & cand16_harsh_vs_parental_harsh_ratio>1 & cand16_harsh_without.overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+      labs(title = "cand16 harsh LFC>1", subtitle = "no enrichment")+
+  rasterise(geom_point(data = DEP_output_3 %>% filter(name == "DS16_GFP"), color = "seagreen4", size = 3), dpi = 300)+
+  rasterise(geom_point(data = DEP_output_3 %>% filter(name == "LPXN"), color = "blue", size = 1), dpi = 300)+
+    geom_vline(xintercept = 0) +
+  geom_label_repel(data = DEP_output_3 %>% filter(cand16_harsh_vs_parental_harsh_significant == TRUE & cand16_harsh_vs_parental_harsh_ratio>1 & cand16_harsh_without.overlap=="yes" & !name == "DS16_GFP" & !name == "LPXN"), color = "black",size=2,  min.segment.length=0, max.overlaps = 20)+
+   geom_label_repel(data = DEP_output_3 %>% filter(name == "LPXN"), color = "blue",size=2,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output_3 %>% filter(name == "DS16_GFP"),label= "Bait", color = "seagreen4", min.segment.length=0,size=3)
+#dev.off()
+
+#plot with bigger text
+#pdf('cand16_harsh_no_overlap_bigger_text.pdf')
+ggplot(DEP_output_3, aes(x=cand16_harsh_vs_parental_harsh_ratio, y=-log10(cand16_harsh_vs_parental_harsh_p.val), label= name))+
+  labs(x="Enrichment", y= "-log10 (p-value)")+
+  theme_bw()+
+  coord_cartesian(xlim = c(-10,12 ), ylim = c(0, 15))+
+  theme(axis.title.x = element_text(color="black", size="14"),axis.title.y = element_text(color="black", size="14"), axis.text.x = element_text(color="black", size="14"),axis.text.y = element_text(color="black", size="14"))+
+  rasterise(geom_point(color = "#cccccc", alpha = 0.8, size = 1), dpi = 300)+
+  rasterise(geom_point(data = DEP_output_3 %>% filter(cand16_harsh_vs_parental_harsh_significant == TRUE & cand16_harsh_vs_parental_harsh_ratio>1 & cand16_harsh_without.overlap=="yes" ), color = "black", size = 1), dpi = 300)+
+      labs(title = "cand16 harsh LFC>1", subtitle = "no enrichment")+
+  rasterise(geom_point(data = DEP_output_3 %>% filter(name == "DS16_GFP"), color = "seagreen4", size = 3), dpi = 300)+
+  rasterise(geom_point(data = DEP_output_3 %>% filter(name == "LPXN"), color = "blue", size = 1), dpi = 300)+
+    geom_vline(xintercept = 0) +
+  geom_label_repel(data = DEP_output_3 %>% filter(cand16_harsh_vs_parental_harsh_significant == TRUE & cand16_harsh_vs_parental_harsh_ratio>1 & cand16_harsh_without.overlap=="yes" & !name == "DS16_GFP" & !name == "LPXN"), color = "black",size=5,  min.segment.length=0, max.overlaps = 20)+
+   geom_label_repel(data = DEP_output_3 %>% filter(name == "LPXN"), color = "blue",size=5,  min.segment.length=0, max.overlaps = 20)+
+ geom_label_repel(data = DEP_output_3 %>% filter(name == "DS16_GFP"),label= "Bait", color = "seagreen4", min.segment.length=0,size=5)
+#dev.off()
+
+```
+
+```{r}
+write.table(DEP_output[DEP_output$cand1_vs_Ctrl_significant & DEP_output$cand1_vs_Ctrl_ratio>1.5,c(2,3,grep("cand1_",colnames(DEP_output)))],"20210730_cand1.txt", sep="\t", quote = F) 
+
+write.table(DEP_output[DEP_output$cand11_vs_Ctrl_significant & DEP_output$cand11_vs_Ctrl_ratio>1.5,c(2,3,grep("cand11_",colnames(DEP_output)))],"20210730_cand11.txt", sep="\t", quote = F)
+
+write.table(DEP_output[DEP_output$cand19_vs_Ctrl_significant & DEP_output$cand19_vs_Ctrl_ratio>1.5,c(2,3,grep("cand19_",colnames(DEP_output)))],"20210730_cand19.txt", sep="\t", quote = F)
+
+write.table(DEP_output_2[DEP_output_2$cand2_vs_parental_significant & DEP_output_2$cand2_vs_parental_ratio>1.5,c(2,3,grep("cand2_",colnames(DEP_output_2)))],"20210730_cand2.txt", sep="\t", quote = F)
+
+write.table(DEP_output_2[DEP_output_2$cand12_vs_parental_significant & DEP_output_2$cand12_vs_parental_ratio>1.5,c(2,3,grep("cand12_",colnames(DEP_output_2)))],"20210730_cand12.txt", sep="\t", quote = F)
+
+write.table(DEP_output_3[DEP_output_3$cand16_pbs_vs_parental_pbs_significant & DEP_output_3$cand16_pbs_vs_parental_pbs_ratio>1.5,c(2,3,grep("cand16_",colnames(DEP_output_3)))],"20210730_cand16.txt", sep="\t", quote = F)
+```
+
+
+```{r manual collector}
+all.sig <- readRDS('../../Revision_relevant_data_and_figs/MS/list_all.sig.RData')
+all.sig$cand1.1 <- DEP_output[DEP_output$cand1_vs_Ctrl_significant & DEP_output$cand1_vs_Ctrl_ratio>1.5,2]
+all.sig$cand2.1 <- DEP_output_2[DEP_output_2$cand2_vs_parental_significant & DEP_output_2$cand2_vs_parental_ratio>1.5,2]
+all.sig$cand11.1 <- DEP_output[DEP_output$cand11_vs_Ctrl_significant & DEP_output$cand11_vs_Ctrl_ratio>1.5,2]
+all.sig$cand12.1 <- DEP_output_2[DEP_output_2$cand12_vs_parental_significant & DEP_output_2$cand12_vs_parental_ratio>1.5,2]
+all.sig$cand16.1 <- DEP_output_3[DEP_output_3$cand16_pbs_vs_parental_pbs_significant & DEP_output_3$cand16_pbs_vs_parental_pbs_ratio>1.5,2]
+all.sig$cand19.1 <- DEP_output[DEP_output$cand19_vs_Ctrl_significant & DEP_output$cand19_vs_Ctrl_ratio>1.5,2]
+saveRDS(all.sig, file='../../Revision_relevant_data_and_figs/MS/list_all.sig.RData')
+```
+
+```{r}
+cand1.3of3 <- with(all.sig, intersect(cand1.1,intersect(cand1.2,cand1.3)))
+cand2.3of3 <- with(all.sig, intersect(cand2.1,intersect(cand2.2,cand2.3)))
+cand11.3of3 <- with(all.sig, intersect(cand11.1,intersect(cand11.2,cand11.3)))
+cand12.3of3 <- with(all.sig, intersect(cand12.1,intersect(cand12.2,cand12.3)))
+cand16.3of3 <- with(all.sig, intersect(cand16.1,intersect(cand16.2,cand16.3)))
+cand19.3of3 <- with(all.sig, intersect(cand19.1,intersect(cand19.2,cand19.3)))
+```
+
+```{r}
+with(all.sig, intersect(cand1.1,intersect(cand1.2,cand1.3)))
+with(all.sig, intersect(cand2.1,intersect(cand2.2,cand2.3)))
+with(all.sig, intersect(cand11.1,intersect(cand11.2,cand11.3)))
+with(all.sig, intersect(cand12.1,intersect(cand12.2,cand12.3)))
+with(all.sig, intersect(cand16.1,intersect(cand16.2,cand16.3)))
+with(all.sig, intersect(cand19.1,intersect(cand19.2,cand19.3)))
+```
+```{r}
+df <- do.call(rbind, lapply(all.sig, as.data.frame))
+colnames(df) <- "gene"
+df$exp <- gsub(".[0-9]+$","",rownames(df))
+
+library(stringr)
+df$exp <- str_replace_all(df$exp,c("cand19" = "NUTF2_u_11","cand16" = "CENPBD2P_p_13","cand11" = "RPLP0_u_15","cand12" = "SNHG1_lnc_47","cand2" = "RCC1_u_20","cand1" = "DSE_u_63"))
+
+df.byexp <- aggregate(gene~exp,df,paste,collapse=',')
+write.table(df.byexp,"MS_hits_by_exp.txt",sep="\t",quote=F,row.names = T, col.names = F)
+df.bygene <- aggregate(exp~gene,df,paste,collapse=',')
+write.table(df.bygene,"MS_hits_by_gene.txt",sep="\t",quote=F,row.names = T, col.names = F)
+```
+

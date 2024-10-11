@@ -1,0 +1,7 @@
+label	condition	replicate
+A375_par_harsh_1	parental_harsh	1
+A375_par_harsh_2	parental_harsh	2
+A375_par_harsh_3	parental_harsh	3
+A375_16KI_harsh_1	16KI_harsh	1
+A375_16KI_harsh_2	16KI_harsh	2
+A375_16KI_harsh_3	16KI_harsh	3
